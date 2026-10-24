@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Carreras de la división')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin-carreras.css}">
+</head>
+<body class="panel-body">
+<div class="panel-layout">
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+    <main class="panel-main">
+        <header class="panel-header">
+            <div>
+                <p class="panel-eyebrow">Administración · División</p>
+                <h1 th:text="${division.nombre}">División</h1>
+                <div class="carreras-identidad">
+                    <span class="badge badge-clave" th:text="${division.clave}"></span>
+                    <span class="badge badge-activa" th:if="${division.activa}">Habilitada</span>
+                    <span class="badge badge-inactiva" th:unless="${division.activa}">Deshabilitada</span>
+                </div>
+            </div>
+            <a class="btn btn-secundario" th:href="@{/admin/divisiones/{id}/editar(id=${division.id})}">Editar división</a>
+        </header>
+        <p th:if="${!#strings.isEmpty(division.descripcion)}" th:text="${division.descripcion}"></p>
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div class="carreras-secciones">
+            <section class="panel-seccion" aria-labelledby="titulo-carreras">
+                <h2 id="titulo-carreras">Carreras de la división</h2>
+                <div class="vacio" th:if="${#lists.isEmpty(carreras)}">Esta división todavía no tiene carreras.</div>
+                <div class="tabla-wrapper" th:unless="${#lists.isEmpty(carreras)}">
+                    <table class="tabla">
+                        <thead>
+                        <tr>
+                            <th scope="col">Clave</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Nivel</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="c : ${carreras}">
+                            <td><span class="badge badge-clave" th:text="${c.clave}"></span></td>
+                            <td th:text="${c.nombre}"></td>
+                            <td><span class="badge badge-nivel" th:text="${c.nivel.etiqueta}"></span></td>
+                            <td>
+                                <span class="badge badge-activa" th:if="${c.activa and division.activa}">Visible</span>
+                                <span class="badge badge-aviso" th:if="${c.activa and !division.activa}">Oculta (división deshabilitada)</span>
+                                <span class="badge badge-inactiva" th:unless="${c.activa}">Deshabilitada</span>
+                            </td>
+                            <td>
+                                <div class="tabla-acciones carreras-acciones">
+                                    <a class="btn btn-secundario btn-sm" th:href="@{/admin/carreras/{id}/editar(id=${c.id})}"
+                                       th:aria-label="'Editar ' + ${c.nombre}">Editar</a>
+                                    <form method="post" th:action="@{/admin/carreras/{id}/eliminar(id=${c.id})}"
+                                          onsubmit="return confirm('¿Seguro que deseas eliminar esta carrera?')">
+                                        <button class="btn btn-peligro btn-sm" type="submit"
+                                                th:aria-label="'Eliminar ' + ${c.nombre}">Eliminar</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel-seccion" aria-labelledby="titulo-agregar">
+                <h2 id="titulo-agregar">Agregar carrera</h2>
+                <p class="form-ayuda">Las nuevas carreras quedan deshabilitadas hasta que Secretaría Académica las habilite.</p>
+                <div class="card">
+                    <form class="form" method="post" th:action="@{/admin/divisiones/{id}/carreras/guardar(id=${division.id})}"
+                          th:object="${nuevaCarrera}">
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label class="form-label" for="nombre">Nombre</label>
+                                <input class="form-input" id="nombre" type="text" th:field="*{nombre}" maxlength="150" required>
+                            </div>
+                            <div class="form-grupo">
+                                <label class="form-label" for="clave">Clave</label>
+                                <input class="form-input" id="clave" type="text" th:field="*{clave}" maxlength="10" required aria-describedby="ayuda-clave">
+                                <p class="form-ayuda" id="ayuda-clave">Única en toda la universidad, máximo 10 caracteres</p>
+                            </div>
+                        </div>
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label class="form-label" for="nivel">Nivel</label>
+                                <select class="form-input" id="nivel" th:field="*{nivel}" required>
+                                    <option value="">Selecciona...</option>
+                                    <option th:each="n : ${niveles}" th:value="${n}" th:text="${n.etiqueta}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="descripcion">Descripción (opcional)</label>
+                            <textarea class="form-input" id="descripcion" th:field="*{descripcion}" maxlength="500" rows="4"></textarea>
+                        </div>
+                        <div class="form-acciones">
+                            <button class="btn btn-primario" type="submit">Agregar carrera</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <a th:href="@{/admin}">← Volver al dashboard</a>
+        </div>
+    </main>
+</div>
+</body>
+</html>

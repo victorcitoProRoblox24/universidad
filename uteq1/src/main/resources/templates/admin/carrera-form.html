@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Editar carrera')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin-carreras.css}">
+</head>
+<body class="panel-body">
+<div class="panel-layout">
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+    <main class="panel-main">
+        <header class="panel-header">
+            <div>
+                <p class="panel-eyebrow">Administración</p>
+                <h1>Editar carrera</h1>
+            </div>
+        </header>
+        <p th:text="'División: ' + ${carrera.division.nombre}"></p>
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <section class="card">
+            <form class="form" method="post" th:action="@{/admin/carreras/{id}/actualizar(id=${carrera.id})}"
+                  th:object="${carrera}">
+                <div class="form-fila">
+                    <div class="form-grupo">
+                        <label class="form-label" for="nombre">Nombre</label>
+                        <input class="form-input" id="nombre" type="text" th:field="*{nombre}" maxlength="150" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label class="form-label" for="clave">Clave</label>
+                        <input class="form-input" id="clave" type="text" th:field="*{clave}" maxlength="10" required aria-describedby="ayuda-clave">
+                        <p class="form-ayuda" id="ayuda-clave">Única en toda la universidad, máximo 10 caracteres</p>
+                    </div>
+                </div>
+                <div class="form-fila">
+                    <div class="form-grupo">
+                        <label class="form-label" for="nivel">Nivel</label>
+                        <select class="form-input" id="nivel" th:field="*{nivel}" required>
+                            <option value="">Selecciona...</option>
+                            <option th:each="n : ${niveles}" th:value="${n}" th:text="${n.etiqueta}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grupo">
+                    <label class="form-label" for="descripcion">Descripción (opcional)</label>
+                    <textarea class="form-input" id="descripcion" th:field="*{descripcion}" maxlength="500" rows="4"></textarea>
+                </div>
+                <div class="form-acciones">
+                    <a class="btn btn-secundario" th:href="@{/admin/divisiones/{id}/carreras(id=${carrera.division.id})}">Cancelar</a>
+                    <button class="btn btn-primario" type="submit">Guardar cambios</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

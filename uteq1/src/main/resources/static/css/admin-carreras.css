@@ -1,0 +1,15 @@
+.carreras-secciones {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.carreras-identidad {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: .75rem;
+}
+
+.carreras-acciones {
+    flex-wrap: wrap;
+}
