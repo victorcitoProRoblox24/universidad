@@ -6,6 +6,7 @@ import mx.edu.uteq.carreras.entity.Division;
 import mx.edu.uteq.carreras.repository.CarreraRepository;
 import mx.edu.uteq.carreras.repository.DivisionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,4 +26,11 @@ public class SecretariaCarreraService {
         return carreraRepository.findByDivisionIdOrderByNombreAsc(divisionId);
     }
 
+    @Transactional
+    public Carrera cambiarEstadoCarrera(Long id) {
+        Carrera carrera = carreraRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("La carrera no existe."));
+        carrera.setActiva(!carrera.isActiva());
+        return carreraRepository.save(carrera);
+    }
 }
