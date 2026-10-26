@@ -9,6 +9,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -58,5 +59,54 @@ public class AdminDivisionController {
             model.addAttribute("mensajeError", ex.getMessage());
             return "admin/division-form";
         }
+    }
+
+    /** HU-07: formulario para editar una división existente. */
+    @GetMapping("/divisiones/{id}/editar")
+    public String editar(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute("division", adminDivisionService.buscarPorId(id));
+            return "admin/division-form";
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("mensajeError", ex.getMessage());
+            return "redirect:/admin";
+        }
+    }
+
+    /** HU-07: guarda los cambios de nombre, clave y descripción; el estado no cambia. */
+    @PostMapping("/divisiones/{id}/actualizar")
+    public String actualizar(@PathVariable("id") Long id, @ModelAttribute("division") Division division,
+                             Model model, RedirectAttributes redirectAttributes) {
+        Division original;
+        try {
+            original = adminDivisionService.buscarPorId(id);
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("mensajeError", ex.getMessage());
+            return "redirect:/admin";
+        }
+
+        try {
+            Division actualizada = adminDivisionService.actualizar(id, division);
+            redirectAttributes.addFlashAttribute("mensajeExito", "División " + actualizada.getClave() + " actualizada.");
+            return "redirect:/admin";
+        } catch (IllegalArgumentException ex) {
+            // Se regresa al formulario con lo que escribió el usuario, pero con el id y estado reales.
+            division.setId(id);
+            division.setActiva(original.isActiva());
+            model.addAttribute("mensajeError", ex.getMessage());
+            return "admin/division-form";
+        }
+    }
+
+    /** HU-07: elimina una división que no tenga carreras. */
+    @PostMapping("/divisiones/{id}/eliminar")
+    public String eliminar(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            String clave = adminDivisionService.eliminar(id);
+            redirectAttributes.addFlashAttribute("mensajeExito", "División " + clave + " eliminada.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("mensajeError", ex.getMessage());
+        }
+        return "redirect:/admin";
     }
 }

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <ul>
  *   <li>HU-05: dashboard con el resumen de divisiones, carreras y aspirantes.</li>
  *   <li>HU-06: alta de divisiones académicas.</li>
+ *   <li>HU-07: edición y eliminación de divisiones.</li>
  * </ul>
  */
 @Service
@@ -84,6 +85,51 @@ public class AdminDivisionService {
         Division division = validarYNormalizar(datos, null);
         division.setActiva(false);
         return divisionRepository.save(division);
+    }
+
+    /** HU-07: busca una división para editarla o eliminarla. */
+    @Transactional(readOnly = true)
+    public Division buscarPorId(Long id) {
+        return divisionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("La división no existe."));
+    }
+
+    /**
+     * HU-07: cambia el nombre, la clave y la descripción. El estado no se toca:
+     * habilitar o deshabilitar es tarea de Secretaría Académica.
+     *
+     * @throws IllegalArgumentException si la división no existe o los datos no son válidos.
+     */
+    @Transactional
+    public Division actualizar(Long id, Division datos) {
+        Division division = buscarPorId(id);
+        // Las validaciones terminan antes de modificar la entidad administrada por JPA.
+        Division validada = validarYNormalizar(datos, id);
+        division.setNombre(validada.getNombre());
+        division.setClave(validada.getClave());
+        division.setDescripcion(validada.getDescripcion());
+        return divisionRepository.save(division);
+    }
+
+    /**
+     * HU-07: elimina la división solo si ya no tiene carreras, para no dejar
+     * carreras huérfanas ni borrar las que tienen aspirantes interesados.
+     *
+     * @return la clave de la división eliminada, para el mensaje de confirmación.
+     * @throws IllegalArgumentException si la división no existe o todavía tiene carreras.
+     */
+    @Transactional
+    public String eliminar(Long id) {
+        Division division = buscarPorId(id);
+        long carreras = carreraRepository.countByDivisionId(id);
+        if (carreras > 0) {
+            throw new IllegalArgumentException("No puedes eliminar la división " + division.getClave()
+                    + " porque tiene " + carreras + (carreras == 1 ? " carrera" : " carreras")
+                    + ". Elimina primero sus carreras o pide a Secretaría Académica que la deshabilite.");
+        }
+        String clave = division.getClave();
+        divisionRepository.delete(division);
+        return clave;
     }
 
     /**

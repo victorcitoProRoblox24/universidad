@@ -1,28 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="es"
+      th:with="esNueva=${division.id == null}">
 <head>
-    <th:block th:replace="~{fragments/layout :: head('Nueva división')}"></th:block>
+    <th:block th:replace="~{fragments/layout :: head(${esNueva} ? 'Nueva división' : 'Editar división')}"></th:block>
     <link rel="stylesheet" th:href="@{/css/admin-divisiones.css}">
 </head>
 <body class="panel-body">
 <div class="panel-layout">
-    <aside th:replace="~{fragments/layout :: sidebar('nueva-division')}"></aside>
+    <aside th:replace="~{fragments/layout :: sidebar(${esNueva} ? 'nueva-division' : 'dashboard')}"></aside>
     <main class="panel-main">
         <header class="panel-header">
             <div>
                 <p class="panel-eyebrow">Administración</p>
-                <h1>Nueva división</h1>
+                <h1 th:text="${esNueva} ? 'Nueva división' : 'Editar división'">Nueva división</h1>
             </div>
         </header>
         <div class="division-form-contenedor">
-            <p class="form-ayuda division-form-intro">
+            <p class="form-ayuda division-form-intro" th:if="${esNueva}">
                 La división quedará deshabilitada hasta que Secretaría Académica la habilite.
                 Después podrás agregarle carreras desde el dashboard.
+            </p>
+            <p class="form-ayuda division-form-intro" th:unless="${esNueva}">
+                Estado actual:
+                <span class="badge badge-activa" th:if="${division.activa}">Habilitada</span>
+                <span class="badge badge-inactiva" th:unless="${division.activa}">Deshabilitada</span>
+                — el estado solo lo cambia Secretaría Académica.
             </p>
             <div th:replace="~{fragments/layout :: alertas}"></div>
 
             <section class="card division-form-card">
-                <form class="form" method="post" th:action="@{/admin/divisiones/guardar}" th:object="${division}">
+                <form class="form" method="post" th:object="${division}"
+                      th:action="${esNueva} ? @{/admin/divisiones/guardar} : @{/admin/divisiones/{id}/actualizar(id=${division.id})}">
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label class="form-label" for="nombre">Nombre</label>
@@ -42,7 +50,8 @@
                     </div>
                     <div class="form-acciones">
                         <a class="btn btn-claro btn-borde" th:href="@{/admin}">Cancelar</a>
-                        <button class="btn btn-primario" type="submit">Guardar división</button>
+                        <button class="btn btn-primario" type="submit"
+                                th:text="${esNueva} ? 'Guardar división' : 'Guardar cambios'">Guardar división</button>
                     </div>
                 </form>
             </section>

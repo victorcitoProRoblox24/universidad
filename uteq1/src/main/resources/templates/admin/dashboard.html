@@ -87,6 +87,14 @@
                                 <a class="btn btn-secundario btn-sm"
                                    th:href="@{/admin/divisiones/{id}/carreras(id=${d.id})}"
                                    th:aria-label="'Ver carreras de ' + ${d.nombre}">Ver carreras</a>
+                                <a class="btn btn-claro btn-borde btn-sm"
+                                   th:href="@{/admin/divisiones/{id}/editar(id=${d.id})}"
+                                   th:aria-label="'Editar ' + ${d.nombre}">Editar</a>
+                                <form method="post" th:action="@{/admin/divisiones/{id}/eliminar(id=${d.id})}"
+                                      onsubmit="return confirm('¿Seguro que deseas eliminar esta división?')">
+                                    <button class="btn btn-peligro btn-sm" type="submit"
+                                            th:aria-label="'Eliminar ' + ${d.nombre}">Eliminar</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
