@@ -1,0 +1,75 @@
+.dashboard-stats .stat-card p {
+    margin: 0;
+}
+
+.dashboard-stats .stat-valor {
+    margin: .35rem 0 .15rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-detalle {
+    color: #5B6B7C;
+    font-size: .85rem;
+}
+
+.dashboard-seccion {
+    margin-top: 1.5rem;
+}
+
+.dashboard-seccion .panel-header {
+    margin-bottom: .5rem;
+}
+
+.dashboard-seccion h2 {
+    margin: 0;
+}
+
+.dashboard-ayuda {
+    margin-bottom: 1rem;
+}
+
+.celda-numero {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.aspirantes-celda {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    min-width: 140px;
+}
+
+.aspirantes-celda .celda-numero {
+    min-width: 2ch;
+    text-align: right;
+}
+
+.barra {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: #E8EBEF;
+    overflow: hidden;
+}
+
+.barra-relleno {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--uteq-verde);
+}
+
+.texto-tenue {
+    color: #5B6B7C;
+}
+
+/* Evita que las tablas anchas estiren la página en pantallas chicas;
+   el scroll horizontal se queda dentro de .tabla-wrapper. */
+.panel-main {
+    min-width: 0;
+}
+
+.tabla-acciones .btn {
+    white-space: nowrap;
+}

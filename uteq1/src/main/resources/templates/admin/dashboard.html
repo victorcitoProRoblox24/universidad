@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Dashboard de administración')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin-divisiones.css}">
+</head>
+<body class="panel-body">
+<div class="panel-layout">
+    <aside th:replace="~{fragments/layout :: sidebar('dashboard')}"></aside>
+    <main class="panel-main">
+        <header class="panel-header">
+            <div>
+                <p class="panel-eyebrow">Administración</p>
+                <h1>Dashboard</h1>
+            </div>
+        </header>
+
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <section class="stats-grid dashboard-stats" aria-label="Resumen general">
+            <div class="stat-card">
+                <p class="stat-etiqueta">Divisiones</p>
+                <p class="stat-valor" th:text="${resumen.totalDivisiones}">0</p>
+                <p class="stat-detalle"
+                   th:text="${resumen.divisionesActivas} + (${resumen.divisionesActivas} == 1 ? ' habilitada' : ' habilitadas')">
+                    0 habilitadas</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-etiqueta">Carreras</p>
+                <p class="stat-valor" th:text="${resumen.totalCarreras}">0</p>
+                <p class="stat-detalle"
+                   th:text="${resumen.carrerasPublicadas} + (${resumen.carrerasPublicadas} == 1 ? ' publicada' : ' publicadas')">
+                    0 publicadas</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-etiqueta">Aspirantes</p>
+                <p class="stat-valor" th:text="${resumen.totalAspirantes}">0</p>
+                <p class="stat-detalle"
+                   th:text="${resumen.aspirantesSinCarrera} + ' sin carrera de interés'">0 sin carrera de interés</p>
+            </div>
+        </section>
+
+        <section class="panel-seccion dashboard-seccion" aria-labelledby="titulo-divisiones">
+            <div class="panel-header">
+                <h2 id="titulo-divisiones">Divisiones</h2>
+            </div>
+            <p class="form-ayuda dashboard-ayuda">
+                Carreras activas del total registrado en cada división, y aspirantes interesados en sus carreras.
+            </p>
+
+            <div class="vacio" th:if="${#lists.isEmpty(divisiones)}">Todavía no hay divisiones registradas.</div>
+            <div class="tabla-wrapper" th:unless="${#lists.isEmpty(divisiones)}">
+                <table class="tabla">
+                    <thead>
+                    <tr>
+                        <th scope="col">Clave</th>
+                        <th scope="col">División</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Carreras activas</th>
+                        <th scope="col">Aspirantes</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="d : ${divisiones}">
+                        <td><span class="badge badge-clave" th:text="${d.clave}">DTI</span></td>
+                        <td><strong th:text="${d.nombre}">División</strong></td>
+                        <td>
+                            <span class="badge badge-activa" th:if="${d.activa}">Habilitada</span>
+                            <span class="badge badge-inactiva" th:unless="${d.activa}">Deshabilitada</span>
+                        </td>
+                        <td class="celda-numero" th:text="${d.carrerasActivas} + ' de ' + ${d.totalCarreras}">0 de 0</td>
+                        <td>
+                            <div class="aspirantes-celda">
+                                <span class="celda-numero" th:text="${d.aspirantes}">0</span>
+                                <span class="barra" aria-hidden="true">
+                                    <span class="barra-relleno" th:style="'width:' + ${d.porcentajeAspirantes} + '%'"></span>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tabla-acciones">
+                                <a class="btn btn-secundario btn-sm"
+                                   th:href="@{/admin/divisiones/{id}/carreras(id=${d.id})}"
+                                   th:aria-label="'Ver carreras de ' + ${d.nombre}">Ver carreras</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="panel-seccion dashboard-seccion" aria-labelledby="titulo-aspirantes">
+            <div class="panel-header">
+                <h2 id="titulo-aspirantes">Aspirantes recientes</h2>
+            </div>
+
+            <div class="vacio" th:if="${#lists.isEmpty(aspirantesRecientes)}">Todavía no hay aspirantes registrados.</div>
+            <div class="tabla-wrapper" th:unless="${#lists.isEmpty(aspirantesRecientes)}">
+                <table class="tabla">
+                    <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Carrera de interés</th>
+                        <th scope="col">Registro</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="a : ${aspirantesRecientes}">
+                        <td th:text="${a.nombreCompleto}">Nombre</td>
+                        <td th:text="${a.correo}">correo</td>
+                        <td>
+                            <th:block th:if="${a.carrera != null}">
+                                <span th:text="${a.carrera}">Carrera</span>
+                                <span class="badge badge-clave" th:text="${a.division}">DTI</span>
+                            </th:block>
+                            <span class="texto-tenue" th:if="${a.carrera == null}">Sin definir</span>
+                        </td>
+                        <td class="celda-numero" th:text="${a.fechaRegistro}">—</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
