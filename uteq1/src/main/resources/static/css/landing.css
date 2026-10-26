@@ -1,0 +1,19 @@
+/* Estilos propios de la landing (HU-01). Usa las variables de uteq.css. */
+.landing-alertas:not(:has(.alerta)) { display: none; }
+.landing-alertas { padding-top: 1.5rem; }
+
+.landing-filtros { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
+.landing-chip { padding: .5rem 1rem; border: 1px solid var(--uteq-borde); border-radius: 999px; background: white; color: var(--uteq-azul); font: 600 .9rem 'Open Sans', sans-serif; cursor: pointer; }
+.landing-chip:hover { border-color: var(--uteq-verde); }
+.landing-chip.activo { border-color: var(--uteq-verde); background: var(--uteq-verde); color: white; }
+.landing-division[hidden] { display: none; }
+
+.landing-division + .landing-division { margin-top: 3rem; }
+.landing-division-encabezado { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.landing-division-encabezado h3 { margin: 0; }
+.landing-division-descripcion { margin: .5rem 0 0; color: #5B6B7C; }
+.landing-division .grid-cards { margin-top: 1.25rem; }
+
+.landing-division .card { display: flex; flex-direction: column; }
+.landing-division .card h4 { margin: .75rem 0 .5rem; color: var(--uteq-azul); font: 700 1.1rem Montserrat, sans-serif; }
+.landing-division .card-pie { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: auto; padding-top: 1.25rem; }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Inicio')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+</head>
+<body>
+<header th:replace="~{fragments/layout :: navbar}"></header>
+<main>
+    <section class="hero">
+        <div class="contenedor">
+            <h1 class="hero-titulo">Construye tu futuro en la UTEQ</h1>
+            <p class="hero-texto">Conoce nuestra oferta educativa de TSU, Ingenierías y Licenciaturas en la Universidad Tecnológica de Querétaro.</p>
+            <div class="hero-acciones">
+                <a class="btn btn-claro" href="#carreras">Ver carreras</a>
+                <a class="btn btn-primario" th:if="${usuarioSesion == null}" th:href="@{/registro}">Registrarme</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="contenedor landing-alertas"><div th:replace="~{fragments/layout :: alertas}"></div></div>
+
+    <section class="seccion" id="carreras">
+        <div class="contenedor">
+            <h2 class="seccion-titulo">Oferta educativa</h2>
+            <p class="seccion-subtitulo">Carreras disponibles por división académica.</p>
+
+            <div class="vacio" th:if="${#lists.isEmpty(divisiones)}">Por ahora no hay carreras publicadas. Vuelve pronto.</div>
+
+            <div class="landing-filtros" th:unless="${#lists.isEmpty(divisiones)}">
+                <button type="button" class="landing-chip activo" data-filtro="todas">Todas</button>
+                <button type="button" class="landing-chip" th:each="d : ${divisiones}"
+                        th:attr="data-filtro=${d.id}" th:text="${d.nombre}">División</button>
+            </div>
+
+            <div class="landing-division" th:each="d : ${divisiones}" th:attr="data-division=${d.id}"
+                 th:with="lista=${carreras.?[division.id == __${d.id}__]}">
+                <div class="landing-division-encabezado">
+                    <h3 th:text="${d.nombre}">División</h3>
+                    <span class="badge badge-clave" th:text="${d.clave}">CLAVE</span>
+                </div>
+                <p class="landing-division-descripcion" th:if="${d.descripcion}" th:text="${d.descripcion}"></p>
+
+                <p class="vacio" th:if="${#lists.isEmpty(lista)}">Próximamente nuevas carreras en esta división.</p>
+
+                <div class="grid-cards" th:unless="${#lists.isEmpty(lista)}">
+                    <article class="card" th:each="c : ${lista}">
+                        <span class="badge badge-nivel" th:text="${c.nivel.etiqueta}"></span>
+                        <h4 class="card-titulo" th:text="${c.nombre}">Carrera</h4>
+                        <p class="card-texto" th:if="${c.descripcion}" th:text="${c.descripcion}"></p>
+                        <div class="card-pie">
+                            <span class="badge badge-clave" th:text="${c.clave}"></span>
+                            <a class="btn btn-primario btn-sm" th:href="@{/registro(carrera=${c.id})}">Me interesa</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="seccion">
+        <div class="contenedor">
+            <h2 class="seccion-titulo">¿Cómo funciona?</h2>
+            <div class="grid-cards">
+                <div class="card">
+                    <h3 class="card-titulo">1. Explora las carreras</h3>
+                    <p class="card-texto">Revisa la oferta de cada división académica y encuentra la carrera que más te interesa.</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-titulo">2. Crea tu cuenta de aspirante</h3>
+                    <p class="card-texto">Regístrate con tus datos y elige la carrera de tu interés.</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-titulo">3. Recibe información de la UTEQ</h3>
+                    <p class="card-texto">Te mantendremos al tanto del proceso de admisión y de las novedades de tu carrera.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script th:src="@{/js/landing.js}"></script>
+</body>
+</html>
