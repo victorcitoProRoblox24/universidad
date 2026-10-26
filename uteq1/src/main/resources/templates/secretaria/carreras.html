@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Carreras de la división')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/secretaria-carreras.css}">
+</head>
+<body class="panel-body">
+<div class="panel-layout">
+    <aside th:replace="~{fragments/layout :: sidebar('panel')}"></aside>
+    <main class="panel-main">
+        <header class="panel-header">
+            <div>
+                <p class="panel-eyebrow">Secretaría Académica · División</p>
+                <div class="division-titulo">
+                    <h1 th:text="${division.nombre}">División</h1>
+                    <span class="badge badge-clave" th:text="${division.clave}">CLAVE</span>
+                    <span th:if="${division.activa}" class="badge badge-activa">Habilitada</span>
+                    <span th:unless="${division.activa}" class="badge badge-inactiva">Deshabilitada</span>
+                </div>
+            </div>
+            <a class="btn btn-secundario" th:href="@{/secretaria}">← Volver al panel</a>
+        </header>
+
+        <div th:replace="~{fragments/layout :: alertas}"></div>
+
+        <div th:unless="${division.activa}" class="alerta alerta-error">
+            Esta división está deshabilitada: ninguna de sus carreras aparece en la página principal. Habilítala desde el panel.
+        </div>
+
+        <p th:if="${!#strings.isEmpty(division.descripcion)}" class="division-descripcion"
+           th:text="${division.descripcion}">Descripción</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-valor" th:text="${#lists.size(carreras)}">0</div>
+                <div class="stat-etiqueta">Carreras</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-valor" th:text="${division.activa ? #lists.size(carreras.?[activa]) : 0}">0</div>
+                <div class="stat-etiqueta">Visibles en el sitio</div>
+            </div>
+        </div>
+
+        <section class="panel-seccion">
+            <div th:if="${#lists.isEmpty(carreras)}" class="vacio">
+                Esta división aún no tiene carreras registradas por el administrador.
+            </div>
+
+            <div th:unless="${#lists.isEmpty(carreras)}" class="tabla-wrapper">
+                <table class="tabla">
+                    <thead>
+                    <tr>
+                        <th>Clave</th>
+                        <th>Carrera</th>
+                        <th>Nivel</th>
+                        <th>Estado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c : ${carreras}">
+                        <td><span class="badge badge-clave" th:text="${c.clave}">CLAVE</span></td>
+                        <td th:text="${c.nombre}">Carrera</td>
+                        <td><span class="badge badge-nivel" th:text="${c.nivel.etiqueta}">Nivel</span></td>
+                        <td>
+                            <span th:if="${c.activa and division.activa}" class="badge badge-activa">Visible</span>
+                            <span th:if="${c.activa and !division.activa}" class="badge badge-aviso">Oculta (división deshabilitada)</span>
+                            <span th:unless="${c.activa}" class="badge badge-inactiva">Deshabilitada</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
