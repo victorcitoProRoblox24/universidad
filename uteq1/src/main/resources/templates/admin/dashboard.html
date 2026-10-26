@@ -13,6 +13,7 @@
                 <p class="panel-eyebrow">Administración</p>
                 <h1>Dashboard</h1>
             </div>
+            <a class="btn btn-primario" th:href="@{/admin/divisiones/nueva}">Nueva división</a>
         </header>
 
         <div th:replace="~{fragments/layout :: alertas}"></div>
@@ -48,7 +49,10 @@
                 Carreras activas del total registrado en cada división, y aspirantes interesados en sus carreras.
             </p>
 
-            <div class="vacio" th:if="${#lists.isEmpty(divisiones)}">Todavía no hay divisiones registradas.</div>
+            <div class="vacio" th:if="${#lists.isEmpty(divisiones)}">
+                Todavía no hay divisiones registradas.
+                <a th:href="@{/admin/divisiones/nueva}">Da de alta la primera</a>.
+            </div>
             <div class="tabla-wrapper" th:unless="${#lists.isEmpty(divisiones)}">
                 <table class="tabla">
                     <thead>

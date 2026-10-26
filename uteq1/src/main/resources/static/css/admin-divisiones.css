@@ -73,3 +73,32 @@
 .tabla-acciones .btn {
     white-space: nowrap;
 }
+
+.division-form-contenedor {
+    max-width: 760px;
+}
+
+.division-form-intro {
+    margin: 0 0 1rem;
+}
+
+.division-form-card {
+    margin-top: 1rem;
+}
+
+/* Alinea los campos arriba aunque un grupo de la fila tenga texto de ayuda. */
+.division-form-card .form-grupo {
+    align-content: start;
+}
+
+.input-clave {
+    text-transform: uppercase;
+}
+
+.input-clave::placeholder {
+    text-transform: none;
+}
+
+.btn-borde {
+    border-color: var(--uteq-borde);
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <th:block th:replace="~{fragments/layout :: head('Nueva división')}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/admin-divisiones.css}">
+</head>
+<body class="panel-body">
+<div class="panel-layout">
+    <aside th:replace="~{fragments/layout :: sidebar('nueva-division')}"></aside>
+    <main class="panel-main">
+        <header class="panel-header">
+            <div>
+                <p class="panel-eyebrow">Administración</p>
+                <h1>Nueva división</h1>
+            </div>
+        </header>
+        <div class="division-form-contenedor">
+            <p class="form-ayuda division-form-intro">
+                La división quedará deshabilitada hasta que Secretaría Académica la habilite.
+                Después podrás agregarle carreras desde el dashboard.
+            </p>
+            <div th:replace="~{fragments/layout :: alertas}"></div>
+
+            <section class="card division-form-card">
+                <form class="form" method="post" th:action="@{/admin/divisiones/guardar}" th:object="${division}">
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label class="form-label" for="nombre">Nombre</label>
+                            <input class="form-input" id="nombre" type="text" th:field="*{nombre}" maxlength="150" required
+                                   placeholder="División de Tecnologías de la Información">
+                        </div>
+                        <div class="form-grupo">
+                            <label class="form-label" for="clave">Clave</label>
+                            <input class="form-input input-clave" id="clave" type="text" th:field="*{clave}" maxlength="10"
+                                   required pattern="[A-Za-z0-9\-]+" placeholder="DTI" aria-describedby="ayuda-clave">
+                            <p class="form-ayuda" id="ayuda-clave">Única, máximo 10 caracteres: letras, números y guiones.</p>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label class="form-label" for="descripcion">Descripción (opcional)</label>
+                        <textarea class="form-input" id="descripcion" th:field="*{descripcion}" maxlength="500" rows="4"></textarea>
+                    </div>
+                    <div class="form-acciones">
+                        <a class="btn btn-claro btn-borde" th:href="@{/admin}">Cancelar</a>
+                        <button class="btn btn-primario" type="submit">Guardar división</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+</div>
+</body>
+</html>
